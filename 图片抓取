@@ -1,0 +1,30 @@
+import os
+import requests
+
+def download_image(image_url, save_dir, image_name=None):
+    # 获取图片内容
+    response = requests.get(image_url)
+    
+    # 如果请求成功
+    if response.status_code == 200:
+        # 如果没有指定图片名称，则从URL中推断图片名称
+        if not image_name:
+            image_name = image_url.split("/")[-1]
+        
+        # 创建保存图片的目录
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+        
+        # 保存图片到指定目录
+        image_path = os.path.join(save_dir, image_name)
+        with open(image_path, 'wb') as f:
+            f.write(response.content)
+        
+        print(f"Image saved at: {image_path}")
+    else:
+        print(f"Failed to retrieve image. Status code: {response.status_code}")
+
+# 示例调用
+image_url = "https://example.com/path/to/image.jpg"  # 图片的URL
+save_dir = "./images"  # 保存图片的目录
+download_image(image_url, save_dir)
